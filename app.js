@@ -30,6 +30,8 @@
     .map((q) => q.lang)
     .sort((a, b) => a.localeCompare(b));
 
+  let lastPickedVariants = new Map(); // lang -> last variant index, to avoid repeating a variant back-to-back
+
   let activeSuggestion = -1;
   let suggestionItems = [];
 
@@ -213,7 +215,24 @@
     const pick = pool[Math.floor(Math.random() * pool.length)];
     recentIds.push(pick.i);
     if (recentIds.length > recentWindow) recentIds.shift();
-    return pick.q;
+    const entry = pick.q;
+    const variants = entry.variants || [];
+    const lastIdx = lastPickedVariants.get(entry.lang);
+    let variantIdx = Math.floor(Math.random() * variants.length);
+    if (variants.length > 1 && variantIdx === lastIdx) {
+      variantIdx = (variantIdx + 1) % variants.length;
+    }
+    lastPickedVariants.set(entry.lang, variantIdx);
+    const v = variants[variantIdx];
+    return {
+      lang: entry.lang,
+      aliases: entry.aliases,
+      tag: entry.tag,
+      phrase: v.phrase,
+      translation: v.translation,
+      tip: v.tip,
+      highlights: v.highlights || [],
+    };
   }
 
   function nextQuestion() {
@@ -264,12 +283,43 @@
     answerLangEl.textContent = current.lang;
     answerTranslationEl.textContent = current.translation;
     answerTipEl.textContent = current.tip;
+    phraseEl.innerHTML = renderPhraseWithHighlights(current.phrase, current.highlights);
     feedbackEl.classList.remove("hidden");
     submitBtn.textContent = "Next";
     inputEl.disabled = true;
     renderScore();
     saveScore();
     nextBtn.focus();
+  }
+
+  function renderPhraseWithHighlights(phrase, highlights) {
+    if (!highlights || !highlights.length) return escapeHtml(phrase);
+    const sorted = highlights
+      .filter((h) => typeof h === "string" && h.length > 0)
+      .slice()
+      .sort((a, b) => b.length - a.length);
+    if (!sorted.length) return escapeHtml(phrase);
+    const out = [];
+    let i = 0;
+    while (i < phrase.length) {
+      let match = null;
+      for (const h of sorted) {
+        if (phrase.substr(i, h.length) === h) {
+          match = h;
+          break;
+        }
+      }
+      if (match) {
+        out.push('<mark class="tell">');
+        out.push(escapeHtml(match));
+        out.push("</mark>");
+        i += match.length;
+      } else {
+        out.push(escapeHtml(phrase[i]));
+        i++;
+      }
+    }
+    return out.join("");
   }
 
   function matchesLanguage(guess, q) {
