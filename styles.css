@@ -101,10 +101,16 @@ html, body {
 .guess {
   display: flex;
   gap: 10px;
+  align-items: stretch;
+}
+
+.combobox {
+  flex: 1;
+  position: relative;
 }
 
 .guess input {
-  flex: 1;
+  width: 100%;
   padding: 12px 14px;
   font-size: 1rem;
   border-radius: 10px;
@@ -118,6 +124,41 @@ html, body {
 .guess input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(124, 156, 255, 0.25);
+}
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--bg-card-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.suggestions li {
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--fg);
+  font-size: 0.95rem;
+}
+
+.suggestions li:hover,
+.suggestions li.active {
+  background: rgba(124, 156, 255, 0.18);
+}
+
+.suggestions li .hl {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 button {

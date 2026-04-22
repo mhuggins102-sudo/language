@@ -23,16 +23,19 @@
 
       <form class="guess" id="guess-form" autocomplete="off">
         <label for="guess-input" class="sr-only">Your guess</label>
-        <input
-          type="text"
-          id="guess-input"
-          list="language-list"
-          placeholder="Type or pick a language…"
-          aria-label="Language guess"
-          autocapitalize="words"
-          spellcheck="false"
-        />
-        <datalist id="language-list"></datalist>
+        <div class="combobox" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="suggestions">
+          <input
+            type="text"
+            id="guess-input"
+            placeholder="Start typing a language…"
+            aria-label="Language guess"
+            aria-autocomplete="list"
+            aria-controls="suggestions"
+            autocapitalize="words"
+            spellcheck="false"
+          />
+          <ul class="suggestions hidden" id="suggestions" role="listbox"></ul>
+        </div>
         <button type="submit" id="submit-btn">Guess</button>
       </form>
 
