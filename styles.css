@@ -1,0 +1,211 @@
+:root {
+  --bg: #0f1220;
+  --bg-card: #181c32;
+  --bg-card-2: #212643;
+  --fg: #eef0ff;
+  --muted: #9aa0c3;
+  --accent: #7c9cff;
+  --accent-2: #b388ff;
+  --good: #4ade80;
+  --bad: #f87171;
+  --border: #2a2f4e;
+  --radius: 14px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    "Noto Sans", "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Devanagari",
+    "Noto Sans CJK JP", "Noto Sans CJK KR", "Noto Sans CJK SC", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: radial-gradient(1200px 600px at 20% -10%, #2b2150 0%, transparent 60%),
+              radial-gradient(900px 500px at 110% 10%, #1a3050 0%, transparent 60%),
+              var(--bg);
+  color: var(--fg);
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 2.25rem;
+  margin: 0 0 4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.score {
+  display: inline-flex;
+  gap: 18px;
+  padding: 8px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.score strong {
+  color: var(--fg);
+  margin-right: 4px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+  margin-top: 12px;
+}
+
+.phrase {
+  font-size: clamp(1.3rem, 3.2vw, 1.9rem);
+  line-height: 1.4;
+  font-weight: 500;
+  padding: 22px 20px;
+  margin-bottom: 22px;
+  background: var(--bg-card-2);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  text-align: center;
+  word-break: break-word;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guess {
+  display: flex;
+  gap: 10px;
+}
+
+.guess input {
+  flex: 1;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card-2);
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.guess input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124, 156, 255, 0.25);
+}
+
+button {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card-2);
+  color: var(--fg);
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: transform 0.05s, background 0.15s, border-color 0.15s;
+}
+
+button:hover { border-color: var(--accent); }
+button:active { transform: translateY(1px); }
+
+button.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+  color: #0b0e1e;
+  font-weight: 600;
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--muted);
+}
+
+.feedback {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  animation: fade 0.25s ease-out;
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.verdict {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.verdict.good { color: var(--good); }
+.verdict.bad  { color: var(--bad); }
+
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  margin: 0 0 20px;
+}
+
+.details dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-top: 2px;
+}
+
+.details dd {
+  margin: 0;
+  color: var(--fg);
+}
+
+.hidden { display: none; }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
+@media (max-width: 520px) {
+  .guess { flex-direction: column; }
+  .score { gap: 12px; font-size: 0.82rem; padding: 6px 10px; }
+  .card { padding: 20px; }
+}

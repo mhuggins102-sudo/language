@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polyglot — Unlimited Language Quiz</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <h1>Polyglot</h1>
+      <p class="tagline">Identify the language. Learn the tell. Repeat forever.</p>
+      <div class="score" id="score">
+        <span><strong id="correct">0</strong> correct</span>
+        <span><strong id="total">0</strong> seen</span>
+        <span><strong id="streak">0</strong> streak</span>
+      </div>
+    </header>
+
+    <section class="card" id="card">
+      <div class="phrase" id="phrase" lang="und" dir="auto"></div>
+
+      <form class="guess" id="guess-form" autocomplete="off">
+        <label for="guess-input" class="sr-only">Your guess</label>
+        <input
+          type="text"
+          id="guess-input"
+          list="language-list"
+          placeholder="Type or pick a language…"
+          aria-label="Language guess"
+          autocapitalize="words"
+          spellcheck="false"
+        />
+        <datalist id="language-list"></datalist>
+        <button type="submit" id="submit-btn">Guess</button>
+      </form>
+
+      <div class="feedback hidden" id="feedback" aria-live="polite">
+        <div class="verdict" id="verdict"></div>
+        <dl class="details">
+          <dt>Language</dt>
+          <dd id="answer-language"></dd>
+          <dt>Translation</dt>
+          <dd id="answer-translation"></dd>
+          <dt>How to spot it</dt>
+          <dd id="answer-tip"></dd>
+        </dl>
+        <button type="button" id="next-btn" class="primary">Next →</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <button type="button" id="skip-btn" class="ghost">Skip / I don't know</button>
+      <button type="button" id="reset-btn" class="ghost">Reset score</button>
+    </footer>
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
