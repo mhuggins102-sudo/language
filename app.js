@@ -18,6 +18,7 @@
   const correctEl = document.getElementById("correct");
   const totalEl = document.getElementById("total");
   const streakEl = document.getElementById("streak");
+  const speakBtn = document.getElementById("speak-btn");
 
   const STORAGE_KEY = "polyglot-score-v1";
 
@@ -34,6 +35,21 @@
 
   let activeSuggestion = -1;
   let suggestionItems = [];
+
+  const speechOK = typeof window !== "undefined" && "speechSynthesis" in window;
+  let voices = [];
+  if (speechOK) {
+    const loadVoices = () => { voices = window.speechSynthesis.getVoices(); updateSpeakBtn(); };
+    loadVoices();
+    if (typeof window.speechSynthesis.addEventListener === "function") {
+      window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+    } else {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+    speakBtn.addEventListener("click", speakCurrent);
+  } else if (speakBtn) {
+    speakBtn.hidden = true;
+  }
 
   const score = loadScore();
   renderScore();
@@ -236,6 +252,7 @@
   }
 
   function nextQuestion() {
+    cancelSpeech();
     current = pickQuestion();
     awaiting = false;
     phraseEl.textContent = current.phrase;
@@ -245,7 +262,58 @@
     inputEl.disabled = false;
     submitBtn.textContent = "Guess";
     hideSuggestions();
+    updateSpeakBtn();
     inputEl.focus();
+  }
+
+  function pickVoice(tag) {
+    if (!voices.length || !tag) return null;
+    const want = String(tag).toLowerCase().replace(/_/g, "-");
+    const wantPrimary = want.split("-")[0];
+    const norm = (s) => String(s || "").toLowerCase().replace(/_/g, "-");
+    let v = voices.find((x) => norm(x.lang) === want);
+    if (v) return v;
+    v = voices.find((x) => norm(x.lang).split("-")[0] === wantPrimary);
+    return v || null;
+  }
+
+  function cancelSpeech() {
+    if (!speechOK) return;
+    try { window.speechSynthesis.cancel(); } catch (_) {}
+    if (speakBtn) speakBtn.classList.remove("speaking");
+  }
+
+  function updateSpeakBtn() {
+    if (!speakBtn || !speechOK) return;
+    const v = pickVoice(current && current.tag);
+    if (!voices.length) {
+      speakBtn.classList.remove("unavailable");
+      speakBtn.title = "Listen";
+    } else if (!v) {
+      speakBtn.classList.add("unavailable");
+      speakBtn.title = "No installed voice for this language — tap to try anyway";
+    } else {
+      speakBtn.classList.remove("unavailable");
+      speakBtn.title = "Listen (" + v.name + ")";
+    }
+  }
+
+  function speakCurrent() {
+    if (!speechOK || !current) return;
+    if (window.speechSynthesis.speaking) {
+      cancelSpeech();
+      return;
+    }
+    const u = new SpeechSynthesisUtterance(current.phrase);
+    u.lang = current.tag || "und";
+    const v = pickVoice(current.tag);
+    if (v) u.voice = v;
+    u.rate = 0.95;
+    u.pitch = 1.0;
+    u.onstart = () => { if (speakBtn) speakBtn.classList.add("speaking"); };
+    u.onend = () => { if (speakBtn) speakBtn.classList.remove("speaking"); };
+    u.onerror = () => { if (speakBtn) speakBtn.classList.remove("speaking"); };
+    window.speechSynthesis.speak(u);
   }
 
   function advance() {
