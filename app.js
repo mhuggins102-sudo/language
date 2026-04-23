@@ -2,6 +2,7 @@
   "use strict";
 
   const phraseEl = document.getElementById("phrase");
+  const phraseTextEl = document.getElementById("phrase-text");
   const inputEl = document.getElementById("guess-input");
   const formEl = document.getElementById("guess-form");
   const submitBtn = document.getElementById("submit-btn");
@@ -255,7 +256,7 @@
     cancelSpeech();
     current = pickQuestion();
     awaiting = false;
-    phraseEl.textContent = current.phrase;
+    phraseTextEl.textContent = current.phrase;
     phraseEl.setAttribute("lang", current.tag || "und");
     feedbackEl.classList.add("hidden");
     inputEl.value = "";
@@ -351,7 +352,7 @@
     answerLangEl.textContent = current.lang;
     answerTranslationEl.textContent = current.translation;
     answerTipEl.textContent = current.tip;
-    phraseEl.innerHTML = renderPhraseWithHighlights(current.phrase, current.highlights);
+    phraseTextEl.innerHTML = renderPhraseWithHighlights(current.phrase, current.highlights);
     feedbackEl.classList.remove("hidden");
     submitBtn.textContent = "Next";
     inputEl.disabled = true;
